@@ -1,0 +1,20 @@
+name: "EXP9a - pull_request_target writes to a fixed cache key"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  write-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create marker file (simulates content influenced by the PR)
+        run: |
+          mkdir -p exp9-cache-dir
+          echo "exp9-marker: written-by-pull_request_target-run-${GITHUB_RUN_ID}" > exp9-cache-dir/marker.txt
+
+      - name: Save to cache under a fixed, never-before-used key
+        uses: actions/cache/save@v4
+        with:
+          path: exp9-cache-dir
+          key: exp9-poison-test-v1
