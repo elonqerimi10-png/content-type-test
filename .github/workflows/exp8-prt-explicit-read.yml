@@ -1,0 +1,29 @@
+name: "EXP8b - pull_request_target with EXPLICIT read-only permissions (positive/negative control)"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-token-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attempt to post a PR comment using GITHUB_TOKEN
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -u
+          echo "--- attempting POST comment (requires pull-requests:write or issues:write) ---"
+          curl -sS -o /tmp/resp.json -w "HTTP_STATUS:%{http_code}\n" \
+            -X POST \
+            -H "Authorization: token ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            -d '{"body":"exp8b-write-test: if this comment exists, GITHUB_TOKEN ignored an explicit read-only permissions: block"}'
+          echo "--- response ---"
+          cat /tmp/resp.json
