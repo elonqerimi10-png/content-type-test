@@ -1,0 +1,25 @@
+name: "EXP8a - pull_request_target with NO permissions block (tests inherited default)"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  check-token-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attempt to post a PR comment using GITHUB_TOKEN
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -u
+          echo "--- attempting POST comment (requires pull-requests:write or issues:write) ---"
+          curl -sS -o /tmp/resp.json -w "HTTP_STATUS:%{http_code}\n" \
+            -X POST \
+            -H "Authorization: token ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            -d '{"body":"exp8a-write-test: if this comment exists, GITHUB_TOKEN had write access with no explicit permissions: block"}'
+          echo "--- response ---"
+          cat /tmp/resp.json
