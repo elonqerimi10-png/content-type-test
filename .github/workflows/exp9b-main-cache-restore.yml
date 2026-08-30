@@ -1,0 +1,25 @@
+name: "EXP9b - restore the fixed cache key from a legitimate default-branch trigger"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  restore-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attempt to restore the cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: exp9-cache-dir
+          key: exp9-poison-test-v1
+
+      - name: Report result
+        run: |
+          echo "cache-hit output: ${{ steps.cache-restore.outputs.cache-hit }}"
+          if [ -f exp9-cache-dir/marker.txt ]; then
+            echo "--- MARKER FILE FOUND, CONTENT: ---"
+            cat exp9-cache-dir/marker.txt
+          else
+            echo "No marker file found - cache miss."
+          fi
