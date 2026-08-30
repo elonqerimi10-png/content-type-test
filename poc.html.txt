@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head><title>before-exec</title></head>
+<body>
+<script>document.title='XSS-POC-DOUBLEEXT-EXEC'; console.log('XSS-POC-DOUBLEEXT-EXEC:' + document.domain);</script>
+<p>XSS POC double extension</p>
+</body>
+</html>
